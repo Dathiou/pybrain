@@ -117,7 +117,7 @@ class SupervisedDataSet(DataSet):
     #                                 target=self['target'][rightIndicies].copy())
     #     return leftDs, rightDs
 
-
+    "tis is a test"
     def splitWithProportion(self, proportion = 0.5):
         indicies = random.permutation(len(self))
         separator = int(len(self) * proportion)
