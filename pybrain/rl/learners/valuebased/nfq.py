@@ -18,23 +18,21 @@ class NFQ(ValueBasedLearner):
     def learn(self):
         # convert reinforcement dataset to NFQ supervised dataset
         supervised = SupervisedDataSet(self.module.network.indim, 1)
-        #print self.dataset
-        # self dataset is in the form: (array([ 0.54906412,  4.53764151,  0.3166573 , -1.08502779]), array([ 1.]), array([ 0.]))
+
         for seq in self.dataset:
             lastexperience = None
-            print "seq", seq
             for state, action, reward in seq:
                 if not lastexperience:
                     # delay each experience in sequence by one
                     lastexperience = (state, action, reward)
                     continue
-                print "lastexperience", lastexperience
+
                 # use experience from last timestep to do Q update
                 (state_, action_, reward_) = lastexperience
 
                 Q = self.module.getValue(state_, action_[0])
 
-                inp = r_[state_, one_to_n(action_[0], self.module.numActions)] #create numpy array
+                inp = r_[state_, one_to_n(action_[0], self.module.numActions)]
                 tgt = Q + 0.5*(reward_ + self.gamma * max(self.module.getActionValues(state)) - Q)
                 supervised.addSample(inp, tgt)
 

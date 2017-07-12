@@ -77,7 +77,6 @@ class LearningAgent(LoggingAgent):
 
     def learn(self, episodes=1):
         """ Call the learner's learn method, which has access to both module and history. """
-        print "kk"
         if self.learning:
             self.learner.learnEpisodes(episodes)
 

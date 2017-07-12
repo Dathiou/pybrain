@@ -15,7 +15,6 @@ from matplotlib import pyplot as plt
 # switch this to True if you want to see the cart balancing the pole (slower)
 render = False
 
-
 plt.ion()
 
 env = CartPoleEnvironment()
@@ -44,11 +43,11 @@ def plotPerformance(values, fig):
 
 performance = []
 
-if render:
+if not render:
     pf_fig = plt.figure()
 
 while(True):
-    # one learning step after one episode of world-interaction
+	# one learning step after one episode of world-interaction
     experiment.doEpisodes(1)
     agent.learn(1)
 
@@ -62,7 +61,7 @@ while(True):
     experiment.agent = agent
 
     performance.append(r)
-    if render:
+    if not render:
         plotPerformance(performance, pf_fig)
 
     print("reward avg", r)

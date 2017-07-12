@@ -20,8 +20,6 @@ from pybrain.structure.modules   import SoftmaxLayer
 
 """ Furthermore, pylab is needed for the graphical output. """
 from pylab import ion, ioff, figure, draw, contourf, clf, show, hold, plot
-
-import matplotlib.pyplot as plt
 from scipy import diag, arange, meshgrid, where
 from numpy.random import multivariate_normal
 
@@ -87,7 +85,7 @@ for i in range(X.size):
 griddata._convertToOneOfMany()  # this is still needed to make the fnn feel comfy
 
 """ Start the training iterations. """
-for i in range(5):
+for i in range(20):
 
     """ Train the network for some epochs. Usually you would set something like 5 here,
     but for visualization purposes we do this one epoch at a time."""
@@ -111,19 +109,19 @@ for i in range(5):
     out = out.reshape(X.shape)
 
     """ Now plot the test data and the underlying grid as a filled contour. """
-    plt.figure(1)
-    plt.ioff()  # interactive graphics off
-    plt.clf()   # clear the plot
+    figure(1)
+    ioff()  # interactive graphics off
+    clf()   # clear the plot
     hold(True) # overplot on
     for c in [0, 1, 2]:
         here, _ = where(tstdata['class'] == c)
-        plt.plot(tstdata['input'][here, 0], tstdata['input'][here, 1], 'o')
+        plot(tstdata['input'][here, 0], tstdata['input'][here, 1], 'o')
     if out.max() != out.min():  # safety check against flat field
         contourf(X, Y, out)   # plot the contour
-    plt.ion()   # interactive graphics on
-    plt.pause(0.001)#plt.draw()  # update the plot
-    #plt.show()
+    ion()   # interactive graphics on
+    draw()  # update the plot
+
 """ Finally, keep showing the plot until user kills it. """
-plt.ioff()
-plt.show()
+ioff()
+show()
 

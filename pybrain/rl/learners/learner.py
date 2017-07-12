@@ -63,6 +63,6 @@ class DataSetLearner(EpisodicLearner):
 
     def learnOnDataset(self, dataset, *args, **kwargs):
         """ set the dataset, and learn """
-        self.dataset = dataset 
+        self.dataset = dataset
         self.learnEpisodes(*args, **kwargs)
 

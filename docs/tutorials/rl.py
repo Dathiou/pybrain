@@ -18,7 +18,6 @@ components from PyBrain:
 
 from scipy import * #@UnusedWildImport
 import pylab
-import matplotlib.pyplot as plt
 
 from pybrain.rl.environments.mazes import Maze, MDPMazeTask
 from pybrain.rl.learners.valuebased import ActionValueTable
@@ -129,16 +128,13 @@ for some number of steps or infinitely, like here:
 
 experiment = Experiment(task, agent)
 
-print "dam"
-
 while True:
-  "dam"
-  experiment.doInteractions(100)
-  agent.learn()
-  agent.reset()
-  plt.pcolor(controller.params.reshape(81,4).max(1).reshape(9,9))
-  plt.pause(0.001)#.draw()
-  plt.ion()
+    experiment.doInteractions(100)
+    agent.learn()
+    agent.reset()
+
+    pylab.pcolor(controller.params.reshape(81,4).max(1).reshape(9,9))
+    pylab.draw()
 
 
 """

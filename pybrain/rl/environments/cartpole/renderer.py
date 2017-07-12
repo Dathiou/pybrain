@@ -1,6 +1,6 @@
 __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 
-from matplotlib import pyplot as plt #import ion, figure, draw, Rectangle, Line2D
+from pylab import ion, figure, draw, Rectangle, Line2D
 from scipy import cos, sin
 from pybrain.rl.environments.renderer import Renderer
 import threading
@@ -39,16 +39,16 @@ class CartPoleRenderer(Renderer):
         Renderer.start(self)
 
     def drawPlot(self):
-        plt.ion()
-        fig = plt.figure(1)
+        ion()
+        fig = figure(1)
         # draw cart
         axes = fig.add_subplot(111, aspect='equal')
-        self.box = plt.Rectangle(xy=(self.pos - self.cartwidth / 2.0, -self.cartheight), width=self.cartwidth, height=self.cartheight)
+        self.box = Rectangle(xy=(self.pos - self.cartwidth / 2.0, -self.cartheight), width=self.cartwidth, height=self.cartheight)
         axes.add_artist(self.box)
         self.box.set_clip_box(axes.bbox)
 
         # draw pole
-        self.pole = plt.Line2D([self.pos, self.pos + sin(self.angle)], [0, cos(self.angle)], linewidth=3, color='black')
+        self.pole = Line2D([self.pos, self.pos + sin(self.angle)], [0, cos(self.angle)], linewidth=3, color='black')
         axes.add_artist(self.pole)
         self.pole.set_clip_box(axes.bbox)
 
@@ -66,6 +66,6 @@ class CartPoleRenderer(Renderer):
             self.box.set_x(self.pos - self.cartwidth / 2.0)
             self.pole.set_xdata([self.pos, self.pos + self.polelength * sin(self.angle)])
             self.pole.set_ydata([0, self.polelength * cos(self.angle)])
-            plt.draw()
+            draw()
             time.sleep(0.05)
         self.stopRequest = False
