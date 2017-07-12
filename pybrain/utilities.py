@@ -382,7 +382,7 @@ def asBinary(i):
 def one_to_n(val, maxval):
     """ Returns a 1-in-n binary encoding of a non-negative integer. """
     a = zeros(maxval, float)
-    a[val] = 1.
+    a[int(val)] = 1.
     return a
 
 

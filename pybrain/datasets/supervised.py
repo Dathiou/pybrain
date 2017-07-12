@@ -102,18 +102,32 @@ class SupervisedDataSet(DataSet):
             res += self.evaluateMSE(module.activate, **args)
         return res/averageOver
 
+    # def splitWithProportion(self, proportion = 0.5):
+    #     """Produce two new datasets, the first one containing the fraction given
+    #     by `proportion` of the samples."""
+    #     indicies = random.permutation(len(self))
+    #     separator = int(len(self) * proportion)
+
+    #     leftIndicies = indicies[:separator]
+    #     rightIndicies = indicies[separator:]
+
+    #     leftDs = SupervisedDataSet(inp=self['input'][leftIndicies].copy(),
+    #                                target=self['target'][leftIndicies].copy())
+    #     rightDs = SupervisedDataSet(inp=self['input'][rightIndicies].copy(),
+    #                                 target=self['target'][rightIndicies].copy())
+    #     return leftDs, rightDs
+
+
     def splitWithProportion(self, proportion = 0.5):
-        """Produce two new datasets, the first one containing the fraction given
-        by `proportion` of the samples."""
         indicies = random.permutation(len(self))
         separator = int(len(self) * proportion)
 
         leftIndicies = indicies[:separator]
         rightIndicies = indicies[separator:]
 
-        leftDs = SupervisedDataSet(inp=self['input'][leftIndicies].copy(),
-                                   target=self['target'][leftIndicies].copy())
-        rightDs = SupervisedDataSet(inp=self['input'][rightIndicies].copy(),
-                                    target=self['target'][rightIndicies].copy())
+        leftDs = self.__class__(inp=self['input'][leftIndicies].copy(),
+                           target=self['target'][leftIndicies].copy())
+        rightDs = self.__class__(inp=self['input'][rightIndicies].copy(),
+                            target=self['target'][rightIndicies].copy())
         return leftDs, rightDs
 

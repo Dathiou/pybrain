@@ -2,7 +2,7 @@ __author__ = 'Thomas Rueckstiess, ruecksti@in.tum.de'
 # $Id$
 
 
-from scipy import ravel, r_
+from scipy import ravel, r_, zeros
 from random import sample
 
 from pybrain.datasets.supervised import SupervisedDataSet
@@ -23,6 +23,7 @@ class SequentialDataSet(SupervisedDataSet):
         # add field that stores the beginning of a new episode
         self.addField('sequence_index', 1)
         self.append('sequence_index', 0)
+        #self.data['sequence_index'] = zeros((0, 1), int)
         self.currentSeq = 0
 
     def newSequence(self):
@@ -42,11 +43,12 @@ class SequentialDataSet(SupervisedDataSet):
         seq = ravel(self.getField('sequence_index'))
         if len(seq) == index + 1:
             # user wants to access the last sequence, return until end of data
-            return self.getField(field)[seq[index]:]
+            #return self.getField(field)[seq[index]:]
+            return self.getField(field)[int(seq[index]) : ] #appears to be float
         if len(seq) < index + 1:
             # sequence index beyond number of sequences. raise exception
             raise IndexError('sequence does not exist.')
-        return self.getField(field)[seq[index]:seq[index + 1]]
+        return self.getField(field)[int(seq[index]):int(seq[index + 1])]
 
     def getSequence(self, index):
         """Returns the sequence given by `index`.
