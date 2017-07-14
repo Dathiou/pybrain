@@ -73,7 +73,7 @@ class ActionValueNetwork(Module, ActionValueInterface):
 
     def __init__(self, dimState, numActions, name=None):
         Module.__init__(self, dimState, 1, name)
-        self.network = buildNetwork(dimState + numActions, dimState + numActions, 1)
+        self.network = buildNetwork(dimState + numActions, 1)
         self.numActions = numActions
 
     def _forwardImplementation(self, inbuf, outbuf):
@@ -85,7 +85,11 @@ class ActionValueNetwork(Module, ActionValueInterface):
     def getMaxAction(self, state):
         """ Return the action with the maximal value for the given state. """
         return argmax(self.getActionValues(state))
-
+    
+    def getOrderedActions(self,state):
+        """ Run forward activation for each of the actions and return them in inverse order of value."""
+        return array(self.getActionValues(state)).argsort()[::-1]
+        
     def getActionValues(self, state):
         """ Run forward activation for each of the actions and returns all values. """
         values = array([self.network.activate(r_[state, one_to_n(i, self.numActions)]) for i in range(self.numActions)])
