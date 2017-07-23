@@ -61,8 +61,18 @@ class DataSetLearner(EpisodicLearner):
 
     dataset = None
 
-    def learnOnDataset(self, dataset, *args, **kwargs):
+    def learnOnDataset(self, pathInputDataset,normalizerSup,normalizerTar, pathNnetWrite = None, *args, **kwargs):
         """ set the dataset, and learn """
-        self.dataset = dataset
-        self.learnEpisodes(*args, **kwargs)
+        #self.dataset = dataset
+        self.pathNnetWrite = pathNnetWrite
+        self.pathInputDataset = pathInputDataset
+        self.pathNormalizerSup = normalizerSup
+        self.pathNormalizerTar = normalizerTar
+        self.learnEpisodes( *args, **kwargs)
 
+    def prepareDataset(self, dataset,pathOutputDataset, *args, **kwargs):
+        """ set the dataset, and learn """
+        #print("this is new code")
+        self.dataset = dataset
+        self.pathOutputDataset = pathOutputDataset
+        self.buildSupervised()

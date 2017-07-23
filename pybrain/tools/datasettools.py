@@ -87,7 +87,7 @@ class DataSetNormalizer(object):
         c = []
         # the first line determines whether we interpret the file as
         # giving min/max of features or mean/std
-        x = f.readline()
+        x = f.readline().rstrip()
         self.meanstd = False if x == 'x' else True
 
         # the next line gives the normalization bounds
@@ -104,23 +104,41 @@ class DataSetNormalizer(object):
 
     def save(self, fname):
         f = open(fname, "w+")
-        f.write('x\n')
+        if self.meanstd == False:
+            f.write('x\n')
+        else:
+            f.write('i\n')
         f.write('%g %g' % (self.newmin, self.newmax))
         for i in range(self.dim):
+            f.write('\n')
             f.write('%d %g %g' % (i + 1, self.par1[i], self.par2[i]))
+            
         f.close()
 
     def normalizePattern(self, y):
-        return (y - self.par1) * self.scale + self.newmin
+        y1=array(y)
+        if self.dim <= 0:
+            raise IndexError("No normalization parameters defined!")
+        dsdim = len(y1)
+        if self.dim != dsdim:
+            raise IndexError("Dimension of normalization params does not match DataSet field!")
+        if self.meanstd:
+            divisor = [i if i > 0 else 1.0 for i in self.par2]
+            final = (y1 - self.par1) / divisor
+        else:
+            #for i in range(dsdim):
+            scale = [u if isfinite(u) else 1.0 for u in self.scale]
+            final = (y1 - self.par1) * scale + self.newmin
+        return final
 
-    def normalize(self, ds, field='input'):
+    def normalize(self, ds):
         """ normalize dataset or vector wrt. to stored min and max """
         if self.dim <= 0:
             raise IndexError("No normalization parameters defined!")
-        dsdim = ds[field].shape[1]
+        dsdim = ds.shape[1]
         if self.dim != dsdim:
             raise IndexError("Dimension of normalization params does not match DataSet field!")
-        newfeat = ds[field]
+        newfeat = ds
         if self.meanstd:
             for i in range(dsdim):
                 divisor = self.par2[i] if self.par2[i] > 0 else 1.0
@@ -129,17 +147,20 @@ class DataSetNormalizer(object):
             for i in range(dsdim):
                 scale = self.scale[i] if isfinite(self.scale[i]) else 1.0
                 newfeat[:, i] = (newfeat[:, i] - self.par1[i]) * scale + self.newmin
-        ds.setField(field, newfeat)
+        return newfeat #ds.setField(field, newfeat)
 
-    def calculate(self, ds, bounds=[-1, 1], field='input'):
-        self.dim = ds[field].shape[1]
+    def calculate(self, ds, bounds=[-1, 1]):
+        self.dim = ds.shape[1]
         if self.meanstd:
-            self.par1 = ds[field].mean(axis=0)
-            self.par2 = ds[field].std(axis=0)
+            self.par1 = ds.mean(axis=0)
+            self.par2 = ds.std(axis=0)
         else:
-            self.par1 = ds[field].min(axis=0)
-            self.par2 = ds[field].max(axis=0)
+            self.par1 = ds.min(axis=0)
+            self.par2 = ds.max(axis=0)
             self.scale = (bounds[1] - bounds[0]) / (self.par2 - self.par1)
+            #print(self.par1)
+            #print(self.par2)
+            #print(self.scale)
         self.newmin = bounds[0]
         self.newmax = bounds[1]
 

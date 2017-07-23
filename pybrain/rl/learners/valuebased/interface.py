@@ -71,10 +71,12 @@ class ActionValueNetwork(Module, ActionValueInterface):
         actions, and the maximal action is returned. This network is used
         for the NFQ algorithm. """
 
-    def __init__(self, dimState, numActions, name=None):
+    def __init__(self, dimState, numActions, normalizerState = None,normalizerTarget = None, name=None):
         Module.__init__(self, dimState, 1, name)
-        self.network = buildNetwork(dimState + numActions, 1)
+        self.network = buildNetwork(dimState + numActions, dimState + numActions, 1)
         self.numActions = numActions
+        self.normalizerTarget = None
+        self.normalizerState = None
 
     def _forwardImplementation(self, inbuf, outbuf):
         """ takes the state vector and return the discrete action with
@@ -86,14 +88,22 @@ class ActionValueNetwork(Module, ActionValueInterface):
         """ Return the action with the maximal value for the given state. """
         return argmax(self.getActionValues(state))
     
-    def getOrderedActions(self,state):
+    def getOrderedActionsByDecreasingValue(self,state):
         """ Run forward activation for each of the actions and return them in inverse order of value."""
-        return array(self.getActionValues(state)).argsort()[::-1]
+        return array(self.getActionValues(state).flatten().argsort()[::-1])
+    
+    def NormalizeState(self, state):
+        if self.normalizerState != None:
+            input_array = self.normalizerState.normalizePattern(state)
+        else:
+            input_array = state
+        #print input_array
+        return input_array
         
     def getActionValues(self, state):
         """ Run forward activation for each of the actions and returns all values. """
-        values = array([self.network.activate(r_[state, one_to_n(i, self.numActions)]) for i in range(self.numActions)])
+        values = array([self.network.activate(r_[self.NormalizeState(array(state)), one_to_n(i, self.numActions)]) for i in range(self.numActions)])
         return values
 
     def getValue(self, state, action):
-        return self.network.activate(r_[state, one_to_n(action, self.numActions)])
+        return self.network.activate(r_[self.NormalizeState(array(state)), one_to_n(action, self.numActions)])

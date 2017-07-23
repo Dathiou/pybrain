@@ -310,3 +310,12 @@ class Network(Module, ParameterContainer):
 
         cnet.owner = cnet
         return cnet
+
+
+
+    def printWeights(self):
+        for mod in self.modules:
+            for connec in self.connections[mod]:
+                print(connec)
+                for cc in range(len(connec.params)):
+                    print(connec.whichBuffers(cc), connec.params[cc])

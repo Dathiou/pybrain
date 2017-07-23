@@ -55,7 +55,7 @@ def buildNetwork(*layers, **options):
     network_map = {
         (False, False): FeedForwardNetwork,
         (True, False): RecurrentNetwork,
-    }
+    } #this is a test
     try:
         network_map[(False, True)] = _FeedForwardNetwork
         network_map[(True, True)] = _RecurrentNetwork
@@ -162,4 +162,10 @@ def _buildNetwork(*layers, **options):
     net.sortModules()
     return net
 
+def pesos_conexiones(n):
+    for mod in n.modules:
+        for conn in n.connections[mod]:
+            print conn
+            for cc in range(len(conn.params)):
+                print conn.whichBuffers(cc), conn.params[cc]
 

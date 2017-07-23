@@ -32,9 +32,10 @@ class SequentialDataSet(SupervisedDataSet):
         sequence. Empty sequences are not allowed, and an EmptySequenceError
         exception will be raised."""
         length = self.getLength()
+        #print "len", length
         if length != 0:
             if ravel(self.getField('sequence_index'))[-1] == length:
-                raise EmptySequenceError
+                raise EmptySequenceError #the last sequence is empty
             self._appendUnlinked('sequence_index', length)
 
     def _getSequenceField(self, index, field):

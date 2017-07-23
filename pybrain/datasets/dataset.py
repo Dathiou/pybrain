@@ -38,7 +38,7 @@ class DataSet(Serializable):
         """Return a string representation of a dataset."""
         s = ""
         for key in self.data:
-            s = s + key + ": dim" + str(self.data[key].shape) + "\n" + str(self.data[key][:self.endmarker[key]]) + "\n\n"
+            s = s + key + ": dim" + str(self.getField(key).shape) + "\n" + str(self.getField(key)) + "\n\n"
         return s
 
     def __getitem__(self, field):
